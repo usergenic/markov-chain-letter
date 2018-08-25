@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="../node_modules/mocha/mocha.css">
+    <script src="../node_modules/mocha/mocha.js"></script>
+  </head>
+  <body>
+    <div id="mocha"></div>
+    <script type="module">
+      mocha.setup({ui: 'bdd'});
+      import('../lib/test/browser_test-esm.js').then(() => {
+        mocha.checkLeaks();
+        mocha.run();
+      });
+    </script>
+    <mcl-app></mcl-app>
+  </body>
+</html>

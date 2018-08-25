@@ -1,0 +1,7 @@
+/.clang-format
+/.gitignore
+/tsconfig.json
+/lib/test/
+/src/test/
+/test/
+/*.tgz
