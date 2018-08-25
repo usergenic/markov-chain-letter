@@ -1,14 +1,27 @@
+import './mcl-source-panel';
+
 import {html, LitElement, property} from '@polymer/lit-element';
+
 import {App} from '../../app';
-import {MclSourcePanel} from './mcl-source-panel';
 
 export class MclApp extends LitElement {
-  app?: App;
+  @property({type: Object})  //
+  app: App = new App();
 
   render() {
-    return html`[mcl-app ${
-        this.app ? html`not yet implemented` :
-                   html`waiting for "app" assignment`}]`;
+    return html`
+      <style>
+        :host {
+          display: block;
+        }
+      </style>
+      <h4>hi there</h4>
+        ${
+        this.app ? html`
+              <mcl-source-panel
+                .sources=${this.app.sources}>
+              </mcl-source-panel>` :
+                   html`[mcl-app waiting for app property assignment]`}`;
   }
 }
 
