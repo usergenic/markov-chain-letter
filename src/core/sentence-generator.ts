@@ -1,4 +1,4 @@
-import {Sentence, SourceText, Term} from './model';
+import {EOS, Sentence, SourceText, Term} from './model';
 import {NextTermIndex, Phrase} from './next-term-index';
 
 export class SentenceGenerator {
@@ -26,19 +26,86 @@ export class SentenceGenerator {
     return {sentences};
   }
 
-  generateSentence(options: GenerateOptions = {}): GeneratedSentence {
+  generateSentence(options: GenerateOptions = {}, currentTry: number = 1):
+      GeneratedSentence {
+    const maxTries = options.maxTries || 1;
     const minSources = options.minSources || 1;
     const maxSources = options.maxSources || this.sources.length;
+    const minSentenceLength = options.minSentenceLength || 5;
+    const maxSentenceLength = options.maxSentenceLength || 1000;
+    const minRunLengthPerSource = options.minRunLengthPerSource || 0;
+    const maxRunLengthPerSource =
+        options.minRunLengthPerSource || maxSentenceLength;
     const mustStartWith = options.mustStartWith || '';
+    const excludePhrases = options.excludePhrases || [];
     const random = options.random || Math.random;
     const sentence: GeneratedSentence = [];
-    const sources = this.sources.sort(() => this.pick([-1, 0, 1], random));
-    let source;
-    for (const candidateSource of sources) {
-      if (candidateSource.nextTermIndex.hasPhrase(mustStartWith)) {
+    let phrase = mustStartWith;
+    let sources = this.sources.sort(() => this.pick([-1, 0, 1], random));
+    let {source, terms} = this.findASourceToStartWith(phrase, sources);
+    phrase.split(' ').forEach((term) => {
+      sentence.push({term, sourceOptionName: 'mustStartWith'});
+    });
+    let currentSourceRunLength = 0;
+    while (true) {
+      try {
+        const term = this.pick(terms, random);
+        if (term === EOS) {
+          const sentenceText = sentence.map((t) => t.term).join(' ').trim();
+          if (sentence.length > maxSentenceLength) {
+            throw new Error(`Generated sentence length ${
+                sentence.length} exceeds maximum sentence length ${
+                maxSentenceLength}.`);
+          }
+          excludePhrases.forEach((p) => {
+            if (sentenceText.includes(p)) {
+              throw new Error(
+                  `Generated sentence includes an excluded phrase "${p}".`);
+            }
+          });
+          return sentence;
+        }
+        ++currentSourceRunLength;
+        sentence.push({term, sourceTextName: source.name});
+        if (currentSourceRunLength >= maxRunLengthPerSource) {
+          this.sources.push(this.sources.shift()!);
+        }
+        if (currentSourceRunLength > minRunLengthPerSource) {
+          sources = this.sources.sort(() => this.pick([-1, 0, 1], random));
+        }
+        phrase = sentence.map((t) => t.term).join(' ').trim();
+        const {source: newSource, terms: newTerms} =
+            this.findASourceToStartWith(phrase, sources);
+        if (source.name !== newSource.name) {
+          currentSourceRunLength = 0;
+          source = newSource;
+        }
+        terms = newTerms;
+      } catch (error) {
+        if (currentTry >= maxTries) {
+          throw error;
+        }
       }
     }
-    return sentence;
+  }
+
+  findASourceToStartWith(startWithPhrase: string, sources: SourceText[]):
+      {source: SourceText, terms: Term[]} {
+    for (const source of sources) {
+      if (source.nextTermIndex.hasPhrase(startWithPhrase)) {
+        return {
+          source,
+          terms: source.nextTermIndex.getNextTerms(startWithPhrase)
+        };
+      }
+    }
+    if (startWithPhrase) {
+      return this.findASourceToStartWith(
+          startWithPhrase.split(' ', 2).slice(1).join(' ').trim(), sources);
+    }
+    throw new Error(
+        `Unable to find source text which can provide next term for start phrase "${
+            startWithPhrase}"`);
   }
 }
 
@@ -55,7 +122,7 @@ export interface GenerateOptions {
   mustContain?: string;
   mustEndWith?: string;
   random?: typeof Math.random;
-  retryLimit?: number;
+  maxTries?: number;
 }
 
 export interface GenerateResult {
@@ -66,5 +133,6 @@ export type GeneratedSentence = GeneratedTerm[];
 
 export interface GeneratedTerm {
   term: Term;
-  sourceTextName: string;
+  sourceTextName?: string;
+  sourceOptionName?: string;
 }

@@ -5,3 +5,5 @@ export class MclSourcePanel extends LitElement {
     return html`[mcl-source-panel element not yet implemented]`;
   }
 }
+
+customElements.define('mcl-source-panel', MclSourcePanel);

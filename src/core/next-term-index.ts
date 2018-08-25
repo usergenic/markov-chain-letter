@@ -1,4 +1,4 @@
-import {Sentence, Term} from './model';
+import {EOS, Sentence, Term} from './model';
 
 export type Phrase = string;
 
@@ -7,7 +7,11 @@ export class NextTermIndex {
   nextTerms = new Map<Phrase, Term[]>();
 
   addSentence(sentence: Sentence) {
-    sentence.forEach((term: Term, index: number) => {
+    if (sentence.length === 0) {
+      return;
+    }
+    this.addNextTerm(EOS, sentence[0]);
+    [...sentence, EOS].forEach((term: Term, index: number) => {
       for (let phraseLength = 1;
            phraseLength <= this.maxPhraseLength && index - phraseLength >= 0;
            ++phraseLength) {

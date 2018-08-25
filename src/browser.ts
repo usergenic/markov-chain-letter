@@ -1,0 +1,1 @@
+import './browser/elements/mcl-app';

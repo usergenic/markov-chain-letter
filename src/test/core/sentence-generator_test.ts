@@ -24,10 +24,11 @@ describe('SentenceGenerator', () => {
       const generator = new SentenceGenerator();
       generator.sources.push(quickBrownFox);
       generator.sources.push(somewhereOverTheRainbow);
-      const sentence = generator.generateSentence({random: () => 0.0});
+      const sentence = generator.generateSentence(
+          {random: () => 0.0, minRunLengthPerSource: 3});
       assert.deepEqual(
-          sentence.map((s) => s.term).join(' '),
-          'The quick brown fox jumped over the rainbow, way up high.');
+          sentence.map((s) => s.term).join(' ').trim(),
+          'The quick brown fox jumped over the rainbow, way up high');
     });
   });
 });

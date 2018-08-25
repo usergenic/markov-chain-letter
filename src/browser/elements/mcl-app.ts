@@ -11,3 +11,5 @@ export class MclApp extends LitElement {
                    html`waiting for "app" assignment`}]`;
   }
 }
+
+customElements.define('mcl-app', MclApp);

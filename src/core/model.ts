@@ -1,5 +1,6 @@
 import {NextTermIndex} from './next-term-index';
 
+export const EOS = '';
 export type Term = string;
 export type Sentence = Term[];
 
