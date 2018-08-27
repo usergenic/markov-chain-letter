@@ -1,7 +1,6 @@
 import './mcl-source-panel';
 
 import {html, LitElement, property} from '@polymer/lit-element';
-import {InputType} from 'zlib';
 
 import {App} from '../../app';
 import {GenerateResult} from '../../core/sentence-generator';

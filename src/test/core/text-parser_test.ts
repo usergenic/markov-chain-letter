@@ -7,10 +7,10 @@ describe('TextParser', () => {
     const parser = new TextParser();
 
     const sentences = parser.parse(`
-        The quick brown fox jumped over the lazy dog.
-        The lazy dog is lazy AF.
-        Y'all are brutalizin' me.
-        Dead men tell no tales!
+        The quick brown fox jumped over
+        the lazy dog. The lazy dog is
+        lazy AF. Y'all are brutalizin'
+        me. Dead men tell no tales!
       `);
 
     assert.deepEqual(sentences.map((s) => s.join(' ')), [
