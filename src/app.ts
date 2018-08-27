@@ -11,4 +11,7 @@ export class App {
     this.generator = new SentenceGenerator();
     this.generateOptions = {};
   }
+  generate() {
+    this.generator.generateSentence(this.generateOptions);
+  }
 }
