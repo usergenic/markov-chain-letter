@@ -1,9 +1,12 @@
 import {SourceText} from './core/model';
-import {GenerateOptions, SentenceGenerator} from './core/sentence-generator';
+import {NextTermIndex} from './core/next-term-index';
+import {GenerateOptions, GenerateResult, SentenceGenerator} from './core/sentence-generator';
 
 export class App {
   generator: SentenceGenerator;
   generateOptions: GenerateOptions;
+  generateResult?: GenerateResult;
+
   get sources(): SourceText[] {
     return this.generator.sources;
   }
@@ -12,6 +15,6 @@ export class App {
     this.generateOptions = {};
   }
   generate() {
-    this.generator.generateSentence(this.generateOptions);
+    this.generateResult = this.generator.generate(this.generateOptions);
   }
 }

@@ -5,7 +5,10 @@
       import {App} from '../lib/browser-esm.js';
       const app = new App();
       demo.app = app;
-      app.generateOptions.mustStartWith = 'oh hai';
+      setTimeout(() => {
+      demo.addSource({name: 'The Quick Brown Fox', originalText: 'The quick brown fox jumped over the lazy dog.'});
+      demo.addSource({name: 'Somewhere Over The Rainbow', originalText: 'Somewhere over the rainbow, way up high.'});
+      }, 5000);
     </script>
   </head>
   <body>

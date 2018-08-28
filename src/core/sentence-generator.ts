@@ -92,10 +92,10 @@ export class SentenceGenerator {
   findASourceToStartWith(startWithPhrase: string, sources: SourceText[]):
       {source: SourceText, terms: Term[]} {
     for (const source of sources) {
-      if (source.nextTermIndex.hasPhrase(startWithPhrase)) {
+      if (source.nextTermIndex!.hasPhrase(startWithPhrase)) {
         return {
           source,
-          terms: source.nextTermIndex.getNextTerms(startWithPhrase)
+          terms: source.nextTermIndex!.getNextTerms(startWithPhrase)
         };
       }
     }
