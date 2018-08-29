@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
-  <head>
+  <body>
+    <mcl-app id="demo"></mcl-app>
     <script type="module">
       import {App} from '../lib/browser-esm.js';
       const app = new App();
@@ -8,10 +9,7 @@
       setTimeout(() => {
       demo.addSource({name: 'The Quick Brown Fox', originalText: 'The quick brown fox jumped over the lazy dog.'});
       demo.addSource({name: 'Somewhere Over The Rainbow', originalText: 'Somewhere over the rainbow, way up high.'});
-      }, 5000);
+      }, 1000);
     </script>
-  </head>
-  <body>
-    <mcl-app id="demo"></mcl-app>
   </body>
 </html>

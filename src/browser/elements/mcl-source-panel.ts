@@ -7,15 +7,11 @@ export class MclSourcePanel extends LitElement {
   @property({type: Array})  //
   sources: SourceText[] = [];
 
-  @property({type: Array})  //
-  dependents: LitElement[] = [];
-
   addSource(source: SourceText) {
-    this.indexSource(source);
+    // this.indexSource(source);
     this.sources.push(source);
     this.invalidate();
     this.dispatchEvent(new Event('change'));
-    return source;
   }
 
   indexSource(source: SourceText) {
@@ -28,6 +24,12 @@ export class MclSourcePanel extends LitElement {
 
   _updateSourceName(source: SourceText, event: Event) {
     source.name = (event.target as HTMLInputElement).value;
+    this.invalidate();
+    this.dispatchEvent(new Event('change'));
+  }
+
+  _updateSourceColor(source: SourceText, event: Event) {
+    source.color = (event.target as HTMLInputElement).value;
     this.invalidate();
     this.dispatchEvent(new Event('change'));
   }
@@ -54,43 +56,53 @@ export class MclSourcePanel extends LitElement {
 
   render() {
     return html`
-              <ul>
-                ${
-        this.sources.map(
-            (s, index) => html`
+      <style>
+        :host {
+          display: block;
+        }
+      </style>
+      <ul>
 
-                <li>
-                  <label>
-                    Source Name
-                    <input type="text"
-                        value="${s.name}"
-                        @input="${(e: Event) => this._updateSourceName(s, e)}">
-                  </label>
-                  <br>
-                  <label>
-                    Source Text
-                    <textarea @input="${
-                (e: Event) =>
-                    this._updateSourceText(s, e)}">${s.originalText}</textarea>
-                  </label>
-                  <br>
-                  <label>
-                    Markov Order
-                    <input type="text"
-                        value="${s.order || 1}"
-                        @input="${(e: Event) => this._updateSourceOrder(s, e)}">
-                  </label>
-                  <br>
-                  <button @click="${() => this._remove(index)}">Remove</button>
-                `)}
-                <li>
-                  <button @click=${() => this.addSource({
+        ${this.sources.map((s, i) => html`
+
+        <li>
+          <label>
+            Source Name
+            <input type="text"
+                value="${s.name}"
+                @input="${(e: Event) => this._updateSourceName(s, e)}">
+          </label>
+          <br>
+          <label>
+            Source Text
+            <textarea
+                @input="${(e: Event) => this._updateSourceText(s, e)}"
+                >${s.originalText}</textarea>
+          </label>
+          <br>
+          <label>
+            Markov Order
+            <input type="text"
+                value="${s.order || 1}"
+                @input="${(e: Event) => this._updateSourceOrder(s, e)}">
+          </label>
+          <br>
+          <label>
+            Color
+            <input type="text"
+                value="${s.color || 'black'}"
+                @input="${(e: Event) => this._updateSourceColor(s, e)}">
+          <button @click="${() => this._remove(i)}">Remove</button>
+        `)}
+
+        <li>
+          <button @click=${() => this.addSource({
       name: '',
       originalText: ''
     })}>
-                    add + source
-                  </button>
-              </ul>`;
+            add + source
+          </button>
+      </ul>`;
   }
 }
 

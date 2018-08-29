@@ -1,21 +1,22 @@
+import './mcl-source-panel';
 import './mcl-generate-options-panel';
 
 import {html, LitElement, property} from '@polymer/lit-element';
 
 import {App} from '../../app';
 import {SourceText} from '../../core/model';
-import {GenerateResult} from '../../core/sentence-generator';
-
 import {MclSourcePanel} from './mcl-source-panel';
 
 export class MclApp extends LitElement {
   @property({type: Object})  //
   app?: App;
 
+  get sourcePanel() {
+    return this.shadowRoot!.querySelector('#source-panel') as MclSourcePanel;
+  }
+
   addSource(source: SourceText) {
-    const sourcePanel =
-        this.shadowRoot!.querySelector('#source-panel')! as MclSourcePanel;
-    sourcePanel.addSource(source);
+    this.sourcePanel.addSource(source);
   }
 
   generate() {
@@ -26,33 +27,49 @@ export class MclApp extends LitElement {
   render() {
     if (this.app) {
       return html`
-      <style>
-        :host {
-          display: block;
-        }
-      </style>
+        <style>
+          :host {
+            display: block;
+          }
+          ${this.app.sources.map((s) => html`
+          span[data-source-text="${s.name}"] {
+            color: ${s.color || 'black'};
+          }
+          `)}
+        </style>
 
-      <h1>Markov Chain Letter</h1>
+        <h1>Markov Chain Letter</h1>
 
-      <mcl-source-panel id="source-panel"
-        @change=${() => this.invalidate()}
-        .sources=${this.app.sources}>
-      </mcl-source-panel>
+        <h2>Sources</h2>
+        <mcl-source-panel id="source-panel"
+            @change=${() => this.invalidate()}
+            .sources=${this.app.sources}></mcl-source-panel>
 
-      <h2>Options</h2>
-      <mcl-generate-options-panel
-          @change=${() => this.invalidate()}
-          .options=${this.app.generateOptions}>
-      </mcl-generate-options-panel>
+        <h2>Options</h2>
+        <mcl-generate-options-panel
+            @change=${() => this.invalidate()}
+            .options=${this.app.generateOptions}>
+        </mcl-generate-options-panel>
 
-      <div>${JSON.stringify(this.app.generateOptions)}</div>
+        <div>${JSON.stringify(this.app.generateOptions)}</div>
 
-      <button @click=${() => this.generate()}>Generate Text</button>
+        <button @click=${() => this.generate()}>Generate Text</button>
 
-      ${this.app.generateResult && html`cool!`}
+        <hr>
 
-      ${this.app.generator.sources.map((s) => s.name).join(', ')}
-    `;
+        <ul>
+        ${
+          this.app.generateResult &&
+          this.app.generateResult.sentences.map((sentence) => html`
+          <li>
+          ${sentence.map((term) => html`
+            <span data-source-text="${term.sourceTextName}">
+              ${term.term}
+            </span>
+          `)}
+        `)}
+        </ul>
+      `;
     } else {
       return html`[mcl-app waiting for app property assignment]`;
     }

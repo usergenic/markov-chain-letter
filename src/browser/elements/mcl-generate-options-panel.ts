@@ -7,9 +7,6 @@ export class MclGenerateOptionsPanel extends LitElement {
   @property({type: Object})  //
   options: GenerateOptions = {};
 
-  @property({type: Array})  //
-  dependents: LitElement[] = [];
-
   _handleInput(propertyChain: string): (event: Event) => void {
     return (event: Event) => {
       let parent: any = this;
@@ -33,14 +30,17 @@ export class MclGenerateOptionsPanel extends LitElement {
         <label>
           Must Start With
           <input type="text"
-              value="${this.options.mustStartWith}"
+              value="${this.options.mustStartWith || ''}"
               @input=${this._handleInput('options.mustStartWith')}>
         </label>
         <label>
           Must Contain
           <input type="text"
-              value="${this.options.mustContain}"
+              value="${this.options.mustContain || ''}"
               @input=${this._handleInput('options.mustContain')}>
+        </label>
+        <label>
+          
         </label>
       </fieldset>
     `;

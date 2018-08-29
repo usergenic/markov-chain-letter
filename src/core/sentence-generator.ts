@@ -68,10 +68,10 @@ export class SentenceGenerator {
         ++currentSourceRunLength;
         sentence.push({term, sourceTextName: source.name});
         if (currentSourceRunLength >= maxRunLengthPerSource) {
-          this.sources.push(this.sources.shift()!);
+          sources.push(sources.shift()!);
         }
         if (currentSourceRunLength > minRunLengthPerSource) {
-          sources = this.sources.sort(() => this.pick([-1, 0, 1], random));
+          sources = sources.sort(() => this.pick([-1, 0, 1], random));
         }
         phrase = sentence.map((t) => t.term).join(' ').trim();
         const {source: newSource, terms: newTerms} =

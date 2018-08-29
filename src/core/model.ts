@@ -9,4 +9,5 @@ export interface SourceText {
   originalText?: string;
   nextTermIndex?: NextTermIndex;
   order?: number;
+  color?: string;
 }
